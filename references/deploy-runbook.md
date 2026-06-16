@@ -119,6 +119,7 @@ Real message:
 6. For an agent bot, send one real domain prompt, for example `I need help choosing a college major` or the project's own safest text-only smoke question.
 7. Confirm the reply is produced by the agent path, not just a static help message or echo.
 8. Save safe proof: timestamp, masked chat id, masked message id, health status, and a short redacted result summary.
+9. If the target project supports a proof log, confirm it records masked ids and a response hash or redacted summary only.
 
 ## Final Report Template
 
@@ -141,6 +142,8 @@ Message loop:
 - inbound message id: om_***1234
 - reply delivered: yes/no
 - agent-path prompt verified: yes/no/not applicable
+- redacted proof log: path / not available
+- proof log checked for raw prompts or secrets: yes/no
 
 Blockers:
 - ...
