@@ -59,6 +59,8 @@ cp -R "$(pwd)" ~/.codex/skills/feishu-bot-deploy
 - `SKILL.md`: the skill instructions and deployment gates.
 - `scripts/preflight.sh`: a no-secret local preflight helper.
 - `scripts/preflight.ps1`: Windows PowerShell preflight helper.
+- `scripts/readiness.ps1`: Windows readiness helper for health, public URL, and
+  Feishu tenant token probes.
 - `.env.example`: redacted environment contract for target bot projects.
 - `references/deploy-runbook.md`: step-by-step runbook for Codex-driven deploys.
 - `LICENSE`: MIT license.
@@ -80,6 +82,18 @@ macOS/Linux:
 The helper checks local project shape, common config files, OpenClaw presence,
 port `18080`, `/health`, and git status. It does not print secrets.
 
+## Readiness Probe
+
+After local `.env` is filled and the service/tunnel are running, use:
+
+```powershell
+.\scripts\readiness.ps1 C:\path\to\bot-project
+```
+
+It checks required env values, masked identifiers, local health, public health,
+and Feishu tenant token access. It does not send real chat messages and does not
+print secrets.
+
 ## Codex Handoff Prompt
 
 After installing the skill, hand a local bot project to Codex with a prompt like:
@@ -88,9 +102,9 @@ After installing the skill, hand a local bot project to Codex with a prompt like
 Use the Feishu Bot Deploy skill to make this Feishu bot real.
 Do the safe local work yourself. Use the in-app Browser for Feishu Open Platform.
 Stop only for QR/CAPTCHA/admin approval/tenant policy blockers.
-Do not print secrets. Completion requires health + callback verification + one
-real Feishu message, reply, and agent-path smoke prompt when the bot wraps an
-agent.
+Do not print secrets. Completion requires readiness probe + health + callback
+verification + one real Feishu message, reply, and agent-path smoke prompt when
+the bot wraps an agent.
 ```
 
 For the full procedure, see `references/deploy-runbook.md`.

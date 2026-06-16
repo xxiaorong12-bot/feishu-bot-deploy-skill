@@ -75,6 +75,15 @@ macOS/Linux:
 For the full deploy sequence, read `references/deploy-runbook.md` when a task
 requires a complete live deployment, callback setup, or final evidence report.
 
+After `.env` is filled and the service/tunnel are expected to be running, run:
+
+```powershell
+.\scripts\readiness.ps1 C:\path\to\project
+```
+
+The readiness helper checks required env values, local health, public health,
+and Feishu tenant token access. It must never print secrets.
+
 Then confirm:
 
 - Current project root and target deployment track.
@@ -146,6 +155,7 @@ For any project:
 Deployment is complete only when the applicable gates pass:
 
 - Local health endpoint returns configured state without exposing secrets.
+- Public `PUBLIC_BASE_URL` health endpoint returns successfully.
 - Feishu credential/token probe succeeds, or channel probe succeeds.
 - Feishu callback URL verification succeeds in the Open Platform console.
 - App version is published after current callback/permission changes.
@@ -172,7 +182,8 @@ For the shell template, prefer:
 curl http://127.0.0.1:18080/health
 ```
 
-and one real Feishu event/reply with `feishu_message_id`.
+and one real Feishu event/reply with `feishu_message_id`. On Windows, prefer
+`scripts/readiness.ps1` before final live message verification.
 
 ## Failure Shields
 

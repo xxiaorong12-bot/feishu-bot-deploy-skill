@@ -34,6 +34,25 @@ macOS/Linux:
 
 The preflight is no-secret. It checks project shape, expected config files, port `18080`, `/health`, OpenClaw presence, and git state.
 
+## One-Command Readiness Probe
+
+After `.env` is filled and the service/tunnel are running:
+
+```powershell
+.\scripts\readiness.ps1 C:\path\to\bot-project
+```
+
+Expected proof before the live Feishu message test:
+
+```text
+ready_env: ok
+tenant_token_probe: ok
+```
+
+Use `-SkipNetwork` only while preparing local config before the service or
+public tunnel exists. The readiness probe does not send real chat messages and
+does not print full credentials.
+
 ## Environment Contract
 
 Copy `.env.example` into the bot project and fill the local `.env`:
@@ -103,7 +122,7 @@ Health:
 curl.exe http://127.0.0.1:18080/health
 ```
 
-Callback URL:
+Public health:
 
 ```powershell
 curl.exe https://your-public-url.example/health
