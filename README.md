@@ -31,7 +31,9 @@ real only after:
 2. Feishu can verify the public callback URL,
 3. required message permissions/events are enabled and published,
 4. a real Feishu message reaches the service,
-5. a real reply is delivered back to Feishu.
+5. a real reply is delivered back to Feishu,
+6. for agent bots, one text-only domain prompt reaches the agent path instead of
+   only returning a static help or echo response.
 
 If login, QR scan, CAPTCHA, tenant policy, or admin approval blocks the flow,
 Codex should record the exact blocker instead of pretending deployment is done.
@@ -85,7 +87,8 @@ Use the Feishu Bot Deploy skill to make this Feishu bot real.
 Do the safe local work yourself. Use the in-app Browser for Feishu Open Platform.
 Stop only for QR/CAPTCHA/admin approval/tenant policy blockers.
 Do not print secrets. Completion requires health + callback verification + one
-real Feishu message and reply.
+real Feishu message, reply, and agent-path smoke prompt when the bot wraps an
+agent.
 ```
 
 For the full procedure, see `references/deploy-runbook.md`.

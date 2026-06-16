@@ -152,6 +152,8 @@ Deployment is complete only when the applicable gates pass:
 - Bot is added to a test chat or DM where tenant policy allows it.
 - A real message is sent from Feishu and the local service receives it.
 - A real reply is delivered back to Feishu.
+- For agent bots, one text-only domain prompt reaches the agent path and returns
+  a non-static answer, not just `/help`, echo, or webhook fallback.
 - Final evidence includes a message id, channel probe output, or equivalent
   runtime proof.
 

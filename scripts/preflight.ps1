@@ -13,14 +13,23 @@ $resolved = Resolve-Path -LiteralPath $ProjectDir -ErrorAction Stop
 Set-Location -LiteralPath $resolved
 Write-Check "project_dir" (Get-Location).Path
 
-$python = Get-Command python -ErrorAction SilentlyContinue
-if (-not $python) { $python = Get-Command py -ErrorAction SilentlyContinue }
-if ($python) {
-    $version = & $python.Source --version 2>&1
+$pythonPath = ""
+if ($env:PYTHON) { $pythonPath = $env:PYTHON }
+if (-not $pythonPath) {
+    $python = Get-Command python -ErrorAction SilentlyContinue
+    if (-not $python) { $python = Get-Command py -ErrorAction SilentlyContinue }
+    if ($python) { $pythonPath = $python.Source }
+}
+if (-not $pythonPath) {
+    $bundled = Join-Path $env:USERPROFILE ".cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe"
+    if (Test-Path -LiteralPath $bundled) { $pythonPath = $bundled }
+}
+if ($pythonPath) {
+    $version = & $pythonPath --version 2>&1
     if ($version) {
         Write-Check "python" $version
     } else {
-        Write-Check "python" ("found {0}, version-unavailable" -f $python.Source)
+        Write-Check "python" ("found {0}, version-unavailable" -f $pythonPath)
     }
 } else {
     Write-Check "python" "missing"
@@ -34,7 +43,7 @@ if ($openclaw) {
     Write-Check "openclaw" "missing"
 }
 
-foreach ($path in @(".env", ".env.example", "pyproject.toml", "package.json")) {
+foreach ($path in @(".env", ".env.example", "real_bot.env.example", "pyproject.toml", "package.json")) {
     if (Test-Path -LiteralPath $path) {
         Write-Check $path "present"
     } else {
@@ -76,14 +85,24 @@ try {
 
 $git = Get-Command git -ErrorAction SilentlyContinue
 if ($git) {
-    $gitRoot = & git rev-parse --show-toplevel 2>$null
-    if ($LASTEXITCODE -eq 0 -and $gitRoot) {
-        Write-Check "git_root" $gitRoot
-        $status = & git status --porcelain
-        if ($status) {
-            Write-Check "git_status" "dirty"
+    try {
+        $gitRoot = & git rev-parse --show-toplevel 2>&1
+        if ($LASTEXITCODE -eq 0 -and $gitRoot) {
+            Write-Check "git_root" $gitRoot
+            $status = & git status --porcelain 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                if ($status) {
+                    Write-Check "git_status" "dirty"
+                } else {
+                    Write-Check "git_status" "clean"
+                }
+            } else {
+                Write-Check "git_status" ("unavailable " + (($status | Select-Object -First 1) -replace "\s+", " "))
+            }
         } else {
-            Write-Check "git_status" "clean"
+            Write-Check "git" ("unavailable " + (($gitRoot | Select-Object -First 1) -replace "\s+", " "))
         }
+    } catch {
+        Write-Check "git" ("unavailable " + ($_.Exception.Message -replace "\s+", " "))
     }
 }

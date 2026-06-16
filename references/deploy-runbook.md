@@ -14,6 +14,7 @@ A deployment is only complete when all of these are true:
 6. A test chat or DM can mention/send to the bot.
 7. A real Feishu message reaches the service.
 8. The service sends a real reply back to Feishu with app credentials, or records why tenant policy blocks it.
+9. If the bot wraps an agent, a text-only domain prompt reaches the agent path and returns a non-static answer.
 
 If any item is blocked by login, QR scan, CAPTCHA, tenant policy, or admin approval, record the exact blocker and stop.
 
@@ -111,11 +112,13 @@ curl.exe https://your-public-url.example/health
 Real message:
 
 1. Add the bot to a test chat where tenant policy allows it.
-2. Send a text-only message.
+2. Send a text-only command such as `/help`.
 3. Confirm the service log records the event.
 4. Confirm the service obtains a tenant access token from `FEISHU_APP_ID` and `FEISHU_APP_SECRET`.
 5. Confirm Feishu receives the reply through the app message API. Use an incoming-webhook reply only as a temporary fallback after the target chat is confirmed.
-6. Save safe proof: timestamp, masked chat id, masked message id, and health status.
+6. For an agent bot, send one real domain prompt, for example `I need help choosing a college major` or the project's own safest text-only smoke question.
+7. Confirm the reply is produced by the agent path, not just a static help message or echo.
+8. Save safe proof: timestamp, masked chat id, masked message id, health status, and a short redacted result summary.
 
 ## Final Report Template
 
@@ -137,6 +140,7 @@ Feishu app:
 Message loop:
 - inbound message id: om_***1234
 - reply delivered: yes/no
+- agent-path prompt verified: yes/no/not applicable
 
 Blockers:
 - ...
