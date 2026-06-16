@@ -60,9 +60,20 @@ turned into a reusable Codex-run deployment path.
 
 Run the helper when useful:
 
+Windows:
+
+```powershell
+.\scripts\preflight.ps1 C:\path\to\project
+```
+
+macOS/Linux:
+
 ```bash
 /Users/evander/.codex/skills/feishu-bot-deploy/scripts/preflight.sh [project_dir]
 ```
+
+For the full deploy sequence, read `references/deploy-runbook.md` when a task
+requires a complete live deployment, callback setup, or final evidence report.
 
 Then confirm:
 

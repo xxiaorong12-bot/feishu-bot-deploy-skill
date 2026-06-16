@@ -22,6 +22,20 @@ Use it when a task involves:
 - Completion requires live health/probe checks and a real Feishu message loop,
   or a concrete platform/permission blocker.
 
+## What "Real Bot" Means
+
+This repo is not just a checklist for creating a Feishu app. A bot is considered
+real only after:
+
+1. the local service runs,
+2. Feishu can verify the public callback URL,
+3. required message permissions/events are enabled and published,
+4. a real Feishu message reaches the service,
+5. a real reply is delivered back to Feishu.
+
+If login, QR scan, CAPTCHA, tenant policy, or admin approval blocks the flow,
+Codex should record the exact blocker instead of pretending deployment is done.
+
 ## Install
 
 Copy or symlink this folder into your Codex skills directory:
@@ -40,8 +54,20 @@ cp -R "$(pwd)" ~/.codex/skills/feishu-bot-deploy
 
 - `SKILL.md`: the skill instructions and deployment gates.
 - `scripts/preflight.sh`: a no-secret local preflight helper.
+- `scripts/preflight.ps1`: Windows PowerShell preflight helper.
+- `.env.example`: redacted environment contract for target bot projects.
+- `references/deploy-runbook.md`: step-by-step runbook for Codex-driven deploys.
+- `LICENSE`: MIT license.
 
 ## Preflight
+
+Windows:
+
+```powershell
+.\scripts\preflight.ps1 C:\path\to\bot-project
+```
+
+macOS/Linux:
 
 ```bash
 ./scripts/preflight.sh /path/to/project
@@ -49,6 +75,20 @@ cp -R "$(pwd)" ~/.codex/skills/feishu-bot-deploy
 
 The helper checks local project shape, common config files, OpenClaw presence,
 port `18080`, `/health`, and git status. It does not print secrets.
+
+## Codex Handoff Prompt
+
+After installing the skill, hand a local bot project to Codex with a prompt like:
+
+```text
+Use the Feishu Bot Deploy skill to make this Feishu bot real.
+Do the safe local work yourself. Use the in-app Browser for Feishu Open Platform.
+Stop only for QR/CAPTCHA/admin approval/tenant policy blockers.
+Do not print secrets. Completion requires health + callback verification + one
+real Feishu message and reply.
+```
+
+For the full procedure, see `references/deploy-runbook.md`.
 
 ## Notes
 
