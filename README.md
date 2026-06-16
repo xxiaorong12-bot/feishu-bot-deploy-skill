@@ -21,6 +21,8 @@ Use it when a task involves:
 - App creation alone is not considered complete.
 - Completion requires live health/probe checks and a real Feishu message loop,
   or a concrete platform/permission blocker.
+- Final proof should be redacted: masked chat/message ids, no full credentials,
+  no raw private user prompts, and no full agent responses in logs.
 
 ## What "Real Bot" Means
 
