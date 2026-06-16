@@ -156,6 +156,8 @@ Deployment is complete only when the applicable gates pass:
   a non-static answer, not just `/help`, echo, or webhook fallback.
 - Final evidence includes a message id, channel probe output, or equivalent
   runtime proof.
+- Prefer a redacted proof log or final report that masks chat/message ids and
+  never stores full user prompts, full agent responses, or credentials.
 
 For OpenClaw, prefer these proof points:
 
@@ -178,6 +180,8 @@ and one real Feishu event/reply with `feishu_message_id`.
   editing apps.
 - Secret leakage: never paste full credentials into the final answer, command
   output summaries, docs, or memory.
+- Proof leakage: proof logs should use masked identifiers and response hashes or
+  short redacted summaries, not raw user messages or complete agent answers.
 - Partial setup: app creation alone is not deployment. Require callback,
   permissions, publish, restart, probe, bind, and real message proof.
 - Stale service: after editing config, restart and check the live endpoint.
@@ -196,7 +200,7 @@ Keep the final answer short and evidence-based:
 - Local service URL and public callback URL if available.
 - Feishu app identity with only safe identifiers, such as app id prefix/suffix.
 - Verification evidence: health status, probe result, binding, callback status,
-  and real Feishu message id.
+  real Feishu message id, and redacted proof log/report location when available.
 - Blockers, if any, with exact next human action such as QR scan or admin
   approval.
 
