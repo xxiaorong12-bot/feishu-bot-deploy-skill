@@ -13,7 +13,7 @@ A deployment is only complete when all of these are true:
 5. App version is published after callback/permission changes.
 6. A test chat or DM can mention/send to the bot.
 7. A real Feishu message reaches the service.
-8. The service sends a real reply back to Feishu.
+8. The service sends a real reply back to Feishu with app credentials, or records why tenant policy blocks it.
 
 If any item is blocked by login, QR scan, CAPTCHA, tenant policy, or admin approval, record the exact blocker and stop.
 
@@ -66,7 +66,7 @@ ${PUBLIC_BASE_URL}${FEISHU_CALLBACK_PATH}
 
 7. Set verification token and encrypt key if the app requires them.
 8. Subscribe to message-received events.
-9. Grant message receive/send permissions required by the bot.
+9. Grant message receive/send permissions required by the bot, including the ability to reply to or send messages in the target chat.
 10. Publish a new app version.
 
 ## Local Runtime Pattern
@@ -113,8 +113,9 @@ Real message:
 1. Add the bot to a test chat where tenant policy allows it.
 2. Send a text-only message.
 3. Confirm the service log records the event.
-4. Confirm Feishu receives the reply.
-5. Save safe proof: timestamp, masked chat id, masked message id, and health status.
+4. Confirm the service obtains a tenant access token from `FEISHU_APP_ID` and `FEISHU_APP_SECRET`.
+5. Confirm Feishu receives the reply through the app message API. Use an incoming-webhook reply only as a temporary fallback after the target chat is confirmed.
+6. Save safe proof: timestamp, masked chat id, masked message id, and health status.
 
 ## Final Report Template
 
